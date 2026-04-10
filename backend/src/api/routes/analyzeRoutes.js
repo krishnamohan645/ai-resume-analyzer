@@ -32,4 +32,6 @@ router.post(
   analyzeController.analyze,
 );
 
+router.get("/history", authMiddleware, analyzeController.getHistory);
+
 module.exports = router;

@@ -19,7 +19,7 @@ const Login = () => {
     try {
       await login(form);
       toast.success("Welcome back!");
-      navigate("/analyze");
+      navigate("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.error || "Login failed");
     } finally {
@@ -63,7 +63,7 @@ const Login = () => {
               value={form.password}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
             />
           </div>
