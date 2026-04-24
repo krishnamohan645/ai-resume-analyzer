@@ -88,7 +88,8 @@ export default function Dashboard() {
         if (userStr) setUser(JSON.parse(userStr));
 
         const res = await axios.get(
-          "http://localhost:5000/api/analyze/history",
+          // "http://localhost:5000/api/analyze/history",
+          "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze/history",
           {
             headers: { Authorization: `Bearer ${token}` },
           },

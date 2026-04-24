@@ -37,7 +37,12 @@ const ScoreRing = ({ score }) => {
 
   return (
     <div className="relative w-[140px] h-[140px] flex-shrink-0">
-      <svg width="140" height="140" viewBox="0 0 140 140" className="-rotate-90">
+      <svg
+        width="140"
+        height="140"
+        viewBox="0 0 140 140"
+        className="-rotate-90"
+      >
         <circle
           className="fill-none stroke-[var(--border)] stroke-[8]"
           cx="70"
@@ -56,7 +61,10 @@ const ScoreRing = ({ score }) => {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="font-syne text-[38px] font-extrabold leading-none" style={{ color }}>
+        <div
+          className="font-syne text-[38px] font-extrabold leading-none"
+          style={{ color }}
+        >
           {displayScore}
         </div>
         <div className="text-[11px] text-[var(--muted)] tracking-widest mt-[2px]">
@@ -113,7 +121,10 @@ export default function Analyzer() {
     setImprovedContent("");
 
     const t1 = setTimeout(() => setLoadingStep("Analyzing skills..."), 1000);
-    const t2 = setTimeout(() => setLoadingStep("Generating suggestions..."), 2000);
+    const t2 = setTimeout(
+      () => setLoadingStep("Generating suggestions..."),
+      2000,
+    );
 
     const token = localStorage.getItem("token");
 
@@ -123,7 +134,8 @@ export default function Analyzer() {
       formData.append("jobDescription", jobDescription);
 
       const res = await axios.post(
-        "http://localhost:5000/api/analyze",
+        // "http://localhost:5000/api/analyze",
+        "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze",
         formData,
         {
           headers: {
@@ -136,7 +148,9 @@ export default function Analyzer() {
       setResult(res.data.data);
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Analysis failed. Please try again.");
+      setError(
+        err.response?.data?.error || "Analysis failed. Please try again.",
+      );
     } finally {
       setIsAnalyzing(false);
       clearTimeout(t1);
@@ -152,7 +166,8 @@ export default function Analyzer() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/analyze/improve",
+        // "http://localhost:5000/api/analyze/improve",
+        "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze/improve",
         {
           resumeText: result.extractedText,
           jobDescription: jobDescription,
@@ -164,12 +179,13 @@ export default function Analyzer() {
 
       setImprovedContent(res.data.data);
       toast.success("Resume optimized successfully!");
-      
+
       // Scroll to optimized section
       setTimeout(() => {
-        document.getElementById("optimized-resume-section")?.scrollIntoView({ behavior: "smooth" });
+        document
+          .getElementById("optimized-resume-section")
+          ?.scrollIntoView({ behavior: "smooth" });
       }, 100);
-      
     } catch (err) {
       console.error(err);
       toast.error("Optimization failed. Please try again.");
@@ -186,12 +202,28 @@ export default function Analyzer() {
   const getMatchStyles = (level) => {
     const l = level?.toLowerCase() || "";
     if (l.includes("strong") || l.includes("excellent"))
-      return { bg: "rgba(34,197,94,0.12)", color: "#22c55e", border: "rgba(34,197,94,0.3)" };
+      return {
+        bg: "rgba(34,197,94,0.12)",
+        color: "#22c55e",
+        border: "rgba(34,197,94,0.3)",
+      };
     if (l.includes("good"))
-      return { bg: "rgba(0,229,255,0.1)", color: "#00e5ff", border: "rgba(0,229,255,0.3)" };
+      return {
+        bg: "rgba(0,229,255,0.1)",
+        color: "#00e5ff",
+        border: "rgba(0,229,255,0.3)",
+      };
     if (l.includes("partial") || l.includes("average"))
-      return { bg: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "rgba(245,158,11,0.3)" };
-    return { bg: "rgba(239,68,68,0.1)", color: "#ef4444", border: "rgba(239,68,68,0.3)" };
+      return {
+        bg: "rgba(245,158,11,0.1)",
+        color: "#f59e0b",
+        border: "rgba(245,158,11,0.3)",
+      };
+    return {
+      bg: "rgba(239,68,68,0.1)",
+      color: "#ef4444",
+      border: "rgba(239,68,68,0.3)",
+    };
   };
 
   if (isAnalyzing) {
@@ -254,13 +286,13 @@ export default function Analyzer() {
             <p className="text-[#8a9fb0] text-[15px] leading-[1.7] font-light">
               {result.summary || "No summary available."}
             </p>
-            
+
             <button
-               onClick={handleOptimize}
-               disabled={isOptimizing}
-               className="mt-6 bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-black font-syne font-bold py-2.5 px-6 rounded-lg text-xs uppercase tracking-widest transition-all hover:scale-[1.02] hover:shadow-[0_4px_20px_rgba(0,229,255,0.2)] disabled:opacity-50 disabled:scale-100"
+              onClick={handleOptimize}
+              disabled={isOptimizing}
+              className="mt-6 bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-black font-syne font-bold py-2.5 px-6 rounded-lg text-xs uppercase tracking-widest transition-all hover:scale-[1.02] hover:shadow-[0_4px_20px_rgba(0,229,255,0.2)] disabled:opacity-50 disabled:scale-100"
             >
-               {isOptimizing ? "Optimizing..." : "✨ Optimize Resume Content"}
+              {isOptimizing ? "Optimizing..." : "✨ Optimize Resume Content"}
             </button>
           </div>
         </div>
@@ -274,7 +306,10 @@ export default function Analyzer() {
             </div>
             <div className="flex flex-col gap-[10px]">
               {(result.topStrengths || []).map((s, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm leading-[1.5]">
+                <div
+                  key={i}
+                  className="flex items-start gap-2 text-sm leading-[1.5]"
+                >
                   <div className="w-[6px] h-[6px] rounded-full mt-[6px] flex-shrink-0 bg-[var(--green)]" />
                   <span className="text-[#c8d8e4]">{s}</span>
                 </div>
@@ -290,7 +325,10 @@ export default function Analyzer() {
             </div>
             <div className="flex flex-col gap-[10px]">
               {(result.criticalGaps || []).map((g, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm leading-[1.5]">
+                <div
+                  key={i}
+                  className="flex items-start gap-2 text-sm leading-[1.5]"
+                >
                   <div className="w-[6px] h-[6px] rounded-full mt-[6px] flex-shrink-0 bg-[var(--red)]" />
                   <span className="text-[#c8d8e4]">{g}</span>
                 </div>
@@ -309,9 +347,21 @@ export default function Analyzer() {
                 const imp = k.importance?.toLowerCase() || "";
                 const isCritical = imp === "critical";
                 const isImportant = imp === "important";
-                const color = isCritical ? "var(--red)" : isImportant ? "var(--yellow)" : "var(--muted)";
-                const bg = isCritical ? "rgba(239,68,68,0.08)" : isImportant ? "rgba(245,158,11,0.08)" : "rgba(90,112,128,0.08)";
-                const border = isCritical ? "rgba(239,68,68,0.3)" : isImportant ? "rgba(245,158,11,0.3)" : "rgba(90,112,128,0.3)";
+                const color = isCritical
+                  ? "var(--red)"
+                  : isImportant
+                    ? "var(--yellow)"
+                    : "var(--muted)";
+                const bg = isCritical
+                  ? "rgba(239,68,68,0.08)"
+                  : isImportant
+                    ? "rgba(245,158,11,0.08)"
+                    : "rgba(90,112,128,0.08)";
+                const border = isCritical
+                  ? "rgba(239,68,68,0.3)"
+                  : isImportant
+                    ? "rgba(245,158,11,0.3)"
+                    : "rgba(90,112,128,0.3)";
 
                 return (
                   <div
@@ -340,15 +390,22 @@ export default function Analyzer() {
             </div>
             <div className="flex flex-col gap-4">
               {(result.weakBullets || []).map((w, i) => (
-                <div key={i} className="pb-4 border-b border-[var(--border)] last:border-0 last:pb-0">
-                  <div className="text-[13px] text-[var(--muted)] italic mb-1.5">"{w.bullet}"</div>
+                <div
+                  key={i}
+                  className="pb-4 border-b border-[var(--border)] last:border-0 last:pb-0"
+                >
+                  <div className="text-[13px] text-[var(--muted)] italic mb-1.5">
+                    "{w.bullet}"
+                  </div>
                   <div className="text-xs text-[var(--red)] flex items-start gap-1.5">
                     <span>⚠</span> {w.reason}
                   </div>
                 </div>
               ))}
               {(!result.weakBullets || result.weakBullets.length === 0) && (
-                <div className="text-[var(--muted)] text-sm">No weak bullets found.</div>
+                <div className="text-[var(--muted)] text-sm">
+                  No weak bullets found.
+                </div>
               )}
             </div>
           </div>
@@ -361,19 +418,29 @@ export default function Analyzer() {
             </div>
             <div className="flex flex-col gap-5">
               {(result.rewriteSuggestions || []).map((r, i) => (
-                <div key={i} className="pb-5 border-b border-[var(--border)] last:border-0 last:pb-0">
-                  <div className="text-[10px] font-bold tracking-[2px] uppercase text-[var(--red)] mb-1.5">Original</div>
+                <div
+                  key={i}
+                  className="pb-5 border-b border-[var(--border)] last:border-0 last:pb-0"
+                >
+                  <div className="text-[10px] font-bold tracking-[2px] uppercase text-[var(--red)] mb-1.5">
+                    Original
+                  </div>
                   <div className="text-[13px] text-[var(--muted)] leading-[1.5] p-3 rounded-r-md bg-[rgba(239,68,68,0.05)] border-l-2 border-[rgba(239,68,68,0.4)] mb-2.5">
                     {r.original}
                   </div>
-                  <div className="text-[10px] font-bold tracking-[2px] uppercase text-[var(--green)] mb-1.5">Improved</div>
+                  <div className="text-[10px] font-bold tracking-[2px] uppercase text-[var(--green)] mb-1.5">
+                    Improved
+                  </div>
                   <div className="text-[13px] text-[var(--green)] leading-[1.5] p-3 rounded-r-md bg-[rgba(34,197,94,0.05)] border-l-2 border-[rgba(34,197,94,0.4)]">
                     ✦ {r.improved}
                   </div>
                 </div>
               ))}
-              {(!result.rewriteSuggestions || result.rewriteSuggestions.length === 0) && (
-                <div className="text-[var(--muted)] text-sm">No suggestions available.</div>
+              {(!result.rewriteSuggestions ||
+                result.rewriteSuggestions.length === 0) && (
+                <div className="text-[var(--muted)] text-sm">
+                  No suggestions available.
+                </div>
               )}
             </div>
           </div>
@@ -384,24 +451,30 @@ export default function Analyzer() {
           <div id="optimized-resume-section" className="mt-12 animate-slideUp">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-[var(--accent)] rounded-xl flex items-center justify-center text-black text-xl">✨</div>
-                 <div>
-                    <h3 className="text-xl font-syne font-extrabold text-white">Optimized Resume</h3>
-                    <p className="text-[var(--muted)] text-xs uppercase tracking-wider font-mono">AI-Generated Content</p>
-                 </div>
+                <div className="w-10 h-10 bg-[var(--accent)] rounded-xl flex items-center justify-center text-black text-xl">
+                  ✨
+                </div>
+                <div>
+                  <h3 className="text-xl font-syne font-extrabold text-white">
+                    Optimized Resume
+                  </h3>
+                  <p className="text-[var(--muted)] text-xs uppercase tracking-wider font-mono">
+                    AI-Generated Content
+                  </p>
+                </div>
               </div>
-              <button 
+              <button
                 onClick={handleCopy}
                 className="bg-[var(--surface)] border border-[var(--border)] text-white px-5 py-2 rounded-lg text-xs font-bold hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all flex items-center gap-2"
               >
                 <span>📋</span> Copy Content
               </button>
             </div>
-            
+
             <div className="bg-[var(--surface)] border border-[var(--accent)] rounded-[24px] p-10 prose prose-invert max-w-none shadow-[0_0_50px_rgba(0,229,255,0.1)]">
-               <div className="markdown-body">
-                  <ReactMarkdown>{improvedContent}</ReactMarkdown>
-               </div>
+              <div className="markdown-body">
+                <ReactMarkdown>{improvedContent}</ReactMarkdown>
+              </div>
             </div>
           </div>
         )}
@@ -418,7 +491,10 @@ export default function Analyzer() {
       </div>
 
       <h1 className="font-syne text-center text-4xl md:text-6xl font-extrabold leading-[1.1] mb-4 tracking-[-1px] text-white">
-        Know your <span className="bg-gradient-to-br from-[var(--accent)] to-[var(--accent2)] bg-clip-text text-transparent">real score</span>
+        Know your{" "}
+        <span className="bg-gradient-to-br from-[var(--accent)] to-[var(--accent2)] bg-clip-text text-transparent">
+          real score
+        </span>
         <br />
         before they do
       </h1>
@@ -430,13 +506,22 @@ export default function Analyzer() {
         <div
           onDragOver={(e) => {
             e.preventDefault();
-            e.currentTarget.classList.add("border-[var(--accent)]", "bg-[rgba(0,229,255,0.04)]");
+            e.currentTarget.classList.add(
+              "border-[var(--accent)]",
+              "bg-[rgba(0,229,255,0.04)]",
+            );
           }}
           onDragLeave={(e) => {
-            e.currentTarget.classList.remove("border-[var(--accent)]", "bg-[rgba(0,229,255,0.04)]");
+            e.currentTarget.classList.remove(
+              "border-[var(--accent)]",
+              "bg-[rgba(0,229,255,0.04)]",
+            );
           }}
           onDrop={(e) => {
-            e.currentTarget.classList.remove("border-[var(--accent)]", "bg-[rgba(0,229,255,0.04)]");
+            e.currentTarget.classList.remove(
+              "border-[var(--accent)]",
+              "bg-[rgba(0,229,255,0.04)]",
+            );
             handleDragDrop(e);
           }}
           className="relative border-2 border-dashed border-[var(--border)] rounded-[14px] p-10 text-center cursor-pointer transition-all hover:border-[var(--accent)] hover:bg-[rgba(0,229,255,0.04)] group"
