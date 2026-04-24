@@ -1,0 +1,31 @@
+{
+  "industries": [
+    {
+      "id": "software_engineering",
+      "keywords": ["React", "Node.js", "Python", "Docker", "AWS", "Kubernetes", "TypeScript", "CI/CD", "PostgreSQL", "System Design"],
+      "guidelines": "Focus on technical depth, scalability, and system architecture. High-impact metrics include performance optimizations (e.g., 'Reduced latency by 40%'), deployment frequency, and automation of repetitive tasks.",
+      "triggers": ["software", "developer", "engineer", "full stack", "backend", "frontend", "coder", "programming"]
+    },
+    {
+      "id": "data_science",
+      "keywords": ["Python", "Pandas", "Scikit-Learn", "SQL", "Machine Learning", "Statistics", "PyTorch", "TensorFlow", "Spark", "Data Visualization"],
+      "guidelines": "Emphasize data-driven decision making and model impact. Look for metrics related to accuracy improvements, cost savings through prediction, or insights that led to strategic shifts.",
+      "triggers": ["data scientist", "machine learning", "analytics", "statistics", "data engineer", "modeling"]
+    },
+    {
+      "id": "marketing",
+      "keywords": ["SEO", "SEM", "Google Analytics", "Content Strategy", "Social Media", "Conversion Rate", "CRM", "Email Marketing", "Brand", "ROI"],
+      "guidelines": "Prioritize growth metrics and campaign performance. Key results include ROAS (Return on Ad Spend), conversion rate improvements, customer acquisition cost (CAC), and brand reach growth.",
+      "triggers": ["marketing", "growth", "advertising", "seo", "content manager", "social media", "brand"]
+    },
+    {
+      "id": "product_management",
+      "keywords": ["Agile", "Scrum", "User Stores", "Product Roadmap", "Stakeholder Management", "UX", "A/B Testing", "KPIs", "Market Research"],
+      "guidelines": "Focus on product-market fit, user growth, and feature impact. Emphasize cross-functional leadership and the ability to define and measure success across a product lifecycle.",
+      "triggers": ["product manager", "pm", "scrum master", "owner", "roadmap"]
+    }
+  ],
+  "general": {
+    "guidelines": "Maintain a professional, active tone. Use strong action verbs at the start of every bullet point. Ensure consistent formatting and a clean, readable structure."
+  }
+}

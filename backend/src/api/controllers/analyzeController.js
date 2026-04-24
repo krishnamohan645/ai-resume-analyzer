@@ -10,22 +10,25 @@ const analyze = async (req, res, next) => {
       return res.status(400).json({ error: "Resume required" });
     }
 
-    const result = await analyzeService.analyzeResume(filePath, jobDescription);
+    const { analysis, extractedText } = await analyzeService.analyzeResume(
+      filePath,
+      jobDescription,
+    );
 
     // Save to database
     await Analysis.create({
       userId: req.user.id,
       fileName: req.file.originalname,
       jobDescription: jobDescription || "",
-      matchScore: result.matchScore,
-      matchLevel: result.matchLevel,
-      summary: result.summary,
-      fullResults: result,
+      matchScore: analysis.matchScore,
+      matchLevel: analysis.matchLevel,
+      summary: analysis.summary,
+      fullResults: { ...analysis, extractedText },
     });
 
     res.status(200).json({
       message: "Resume analyzed successfully",
-      data: result,
+      data: { ...analysis, extractedText },
     });
   } catch (error) {
     next(error);
@@ -33,6 +36,27 @@ const analyze = async (req, res, next) => {
     if (filePath && fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
+  }
+};
+
+const improve = async (req, res, next) => {
+  try {
+    const { resumeText, jobDescription } = req.body;
+    if (!resumeText) {
+      return res.status(400).json({ error: "Resume text required" });
+    }
+
+    const improvedContent = await analyzeService.improveResume(
+      resumeText,
+      jobDescription,
+    );
+
+    res.status(200).json({
+      message: "Resume optimized successfully",
+      data: improvedContent,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -52,4 +76,4 @@ const getHistory = async (req, res, next) => {
   }
 };
 
-module.exports = { analyze, getHistory };
+module.exports = { analyze, improve, getHistory };

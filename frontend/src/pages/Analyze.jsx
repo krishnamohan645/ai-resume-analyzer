@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import toast from "react-hot-toast";
 
 const ScoreRing = ({ score }) => {
-// ... rest of file
   const [displayScore, setDisplayScore] = useState(0);
   const circumference = 364.4;
   const offset = circumference - (score / 100) * circumference;
@@ -69,9 +70,11 @@ const ScoreRing = ({ score }) => {
 export default function Analyzer() {
   const location = useLocation();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
   const [result, setResult] = useState(null);
+  const [improvedContent, setImprovedContent] = useState("");
   const [error, setError] = useState("");
   const [loadingStep, setLoadingStep] = useState("");
 
@@ -107,8 +110,8 @@ export default function Analyzer() {
     setIsAnalyzing(true);
     setLoadingStep("Extracting resume...");
     setError("");
+    setImprovedContent("");
 
-    // AI-feel loading steps
     const t1 = setTimeout(() => setLoadingStep("Analyzing skills..."), 1000);
     const t2 = setTimeout(() => setLoadingStep("Generating suggestions..."), 2000);
 
@@ -139,6 +142,45 @@ export default function Analyzer() {
       clearTimeout(t1);
       clearTimeout(t2);
     }
+  };
+
+  const handleOptimize = async () => {
+    if (!result?.extractedText) return;
+
+    setIsOptimizing(true);
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/analyze/improve",
+        {
+          resumeText: result.extractedText,
+          jobDescription: jobDescription,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      setImprovedContent(res.data.data);
+      toast.success("Resume optimized successfully!");
+      
+      // Scroll to optimized section
+      setTimeout(() => {
+        document.getElementById("optimized-resume-section")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      
+    } catch (err) {
+      console.error(err);
+      toast.error("Optimization failed. Please try again.");
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(improvedContent);
+    toast.success("Copied to clipboard!");
   };
 
   const getMatchStyles = (level) => {
@@ -177,7 +219,7 @@ export default function Analyzer() {
     const matchStyles = getMatchStyles(result.matchLevel);
 
     return (
-      <div className="min-h-screen py-10 px-5 max-w-[900px] mx-auto animate-fadeIn">
+      <div className="min-h-screen py-10 px-5 max-w-[900px] mx-auto animate-fadeIn pb-32">
         <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
           <div className="font-syne text-[13px] font-bold tracking-[4px] text-[var(--accent)] uppercase">
             ⬡ ResumeAI
@@ -187,6 +229,7 @@ export default function Analyzer() {
               setResult(null);
               setFile(null);
               setJobDescription("");
+              setImprovedContent("");
             }}
             className="bg-transparent border border-[var(--border)] text-[var(--muted)] rounded-lg py-2 px-4 font-sans text-[13px] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all"
           >
@@ -211,6 +254,14 @@ export default function Analyzer() {
             <p className="text-[#8a9fb0] text-[15px] leading-[1.7] font-light">
               {result.summary || "No summary available."}
             </p>
+            
+            <button
+               onClick={handleOptimize}
+               disabled={isOptimizing}
+               className="mt-6 bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-black font-syne font-bold py-2.5 px-6 rounded-lg text-xs uppercase tracking-widest transition-all hover:scale-[1.02] hover:shadow-[0_4px_20px_rgba(0,229,255,0.2)] disabled:opacity-50 disabled:scale-100"
+            >
+               {isOptimizing ? "Optimizing..." : "✨ Optimize Resume Content"}
+            </button>
           </div>
         </div>
 
@@ -327,6 +378,33 @@ export default function Analyzer() {
             </div>
           </div>
         </div>
+
+        {/* Improved Resume Display */}
+        {improvedContent && (
+          <div id="optimized-resume-section" className="mt-12 animate-slideUp">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                 <div className="w-10 h-10 bg-[var(--accent)] rounded-xl flex items-center justify-center text-black text-xl">✨</div>
+                 <div>
+                    <h3 className="text-xl font-syne font-extrabold text-white">Optimized Resume</h3>
+                    <p className="text-[var(--muted)] text-xs uppercase tracking-wider font-mono">AI-Generated Content</p>
+                 </div>
+              </div>
+              <button 
+                onClick={handleCopy}
+                className="bg-[var(--surface)] border border-[var(--border)] text-white px-5 py-2 rounded-lg text-xs font-bold hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all flex items-center gap-2"
+              >
+                <span>📋</span> Copy Content
+              </button>
+            </div>
+            
+            <div className="bg-[var(--surface)] border border-[var(--accent)] rounded-[24px] p-10 prose prose-invert max-w-none shadow-[0_0_50px_rgba(0,229,255,0.1)]">
+               <div className="markdown-body">
+                  <ReactMarkdown>{improvedContent}</ReactMarkdown>
+               </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

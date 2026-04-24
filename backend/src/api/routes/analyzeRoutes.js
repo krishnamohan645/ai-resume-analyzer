@@ -33,5 +33,6 @@ router.post(
 );
 
 router.get("/history", authMiddleware, analyzeController.getHistory);
+router.post("/improve", authMiddleware, analyzeController.improve);
 
 module.exports = router;
