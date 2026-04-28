@@ -136,8 +136,8 @@ export default function Analyzer() {
       formData.append("jobDescription", jobDescription);
 
       const res = await axios.post(
-        "http://localhost:5000/api/analyze",
-        // "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze",
+        // "http://localhost:5000/api/analyze",
+        "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze",
         formData,
         {
           headers: {
