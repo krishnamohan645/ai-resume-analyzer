@@ -8,8 +8,7 @@ const path = require("path");
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const extractPdfText = async (filePath) => {
-  const buffer = fs.readFileSync(filePath);
+const extractPdfText = async (buffer) => {
   const parser = new PDFParse({ data: buffer });
   const data = await parser.getText();
   await parser.destroy();
@@ -87,8 +86,8 @@ Must-have Keywords: ${matchedIndustry.keywords.join(", ")}
   }
 };
 
-const analyzeResume = async (filePath, jobDescription) => {
-  const resumeFile = await extractPdfText(filePath);
+const analyzeResume = async (fileBuffer, jobDescription) => {
+  const resumeFile = await extractPdfText(fileBuffer);
   const expertContext = retrieveExpertContext(resumeFile);
 
   const prompt = `

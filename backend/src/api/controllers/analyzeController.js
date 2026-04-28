@@ -1,17 +1,15 @@
-const fs = require("fs");
 const analyzeService = require("../services/analyzeService");
 const Analysis = require("../models/analysisModel");
 
 const analyze = async (req, res, next) => {
-  const filePath = req.file?.path;
   try {
     const { jobDescription } = req.body;
-    if (!filePath) {
+    if (!req.file?.buffer) {
       return res.status(400).json({ error: "Resume required" });
     }
 
     const { analysis, extractedText } = await analyzeService.analyzeResume(
-      filePath,
+      req.file.buffer,
       jobDescription,
     );
 
@@ -32,10 +30,6 @@ const analyze = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-  } finally {
-    if (filePath && fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
   }
 };
 
