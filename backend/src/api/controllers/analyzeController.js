@@ -12,7 +12,7 @@ const analyze = async (req, res, next) => {
       req.file.buffer,
       jobDescription,
     );
-
+console.log(req.file.buffer, "[Controller] Resume analysis completed:", analysis);
     // Save to database
     await Analysis.create({
       userId: req.user.id,

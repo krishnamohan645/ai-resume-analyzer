@@ -87,6 +87,7 @@ Must-have Keywords: ${matchedIndustry.keywords.join(", ")}
 };
 
 const analyzeResume = async (fileBuffer, jobDescription) => {
+  console.log("[Analyze] Starting resume analysis...", jobDescription);
   const resumeFile = await extractPdfText(fileBuffer);
   const expertContext = retrieveExpertContext(resumeFile);
 

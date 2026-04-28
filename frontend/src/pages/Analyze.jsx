@@ -110,6 +110,8 @@ export default function Analyzer() {
   };
 
   const handleAnalyze = async () => {
+    if (isAnalyzing) return;
+
     if (!file) {
       setError("Please upload a resume first.");
       return;
@@ -134,8 +136,8 @@ export default function Analyzer() {
       formData.append("jobDescription", jobDescription);
 
       const res = await axios.post(
-        // "http://localhost:5000/api/analyze",
-        "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze",
+        "http://localhost:5000/api/analyze",
+        // "https://ai-resume-analyzer-v5pg.onrender.com/api/analyze",
         formData,
         {
           headers: {
@@ -148,6 +150,14 @@ export default function Analyzer() {
       setResult(res.data.data);
     } catch (err) {
       console.error(err);
+      if (err.response?.status === 429) {
+        setError(
+          err.response?.data?.error ||
+            "Analyze limit reached. Please try again after an hour.",
+        );
+        return;
+      }
+
       setError(
         err.response?.data?.error || "Analysis failed. Please try again.",
       );
