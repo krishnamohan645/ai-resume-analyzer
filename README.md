@@ -89,7 +89,7 @@ ai-resume-builder/
 
 Make sure you have:
 
-- Node.js 18 or newer
+- Node.js 22.21.0 or newer
 - npm
 - PostgreSQL database
 - Groq API key
